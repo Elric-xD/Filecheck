@@ -4,8 +4,8 @@ RUN apt update -y > /dev/null 2>&1 && apt upgrade -y > /dev/null 2>&1 && apt ins
 ENV LANG en_US.utf8
 ARG ngrokid
 ARG Password
-ENV Password=$2Laksh120
-ENV ngrokid=$22tGWfblCavqrZ5X8tuQUaeilyfz_77Z71BZtdTmWasHkLwnah
+ENV Password=$Laksh120
+ENV ngrokid=${token}
 RUN apt install ssh wget unzip -y > /dev/null 2>&1
 RUN wget -O ngrok.zip https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-linux-amd64.zip > /dev/null 2>&1
 RUN unzip ngrok.zip
