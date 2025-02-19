@@ -1,19 +1,18 @@
-FROM debian
-ARG NGROK_TOKEN
-ARG REGION=ap
-ENV DEBIAN_FRONTEND=noninteractive
-RUN apt update && apt upgrade -y && apt install -y \
-    ssh wget unzip vim curl python3
-RUN wget -q https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-linux-amd64.zip -O /ngrok-stable-linux-amd64.zip\
-    && cd / && unzip ngrok-stable-linux-amd64.zip \
-    && chmod +x ngrok
-RUN mkdir /run/sshd \
-    && echo "/ngrok tcp --authtoken $2M2ESLHPPRegkubJghBtpyGDmPa_32TreRQWPsZZngSwCwJAC --region $Asia 22 &" >>/openssh.sh \
-    && echo "sleep 5" >> /openssh.sh \
-    && echo "curl -s http://localhost:4040/api/tunnels | python3 -c \"import sys, json; print(\\\"ssh info:\\\n\\\",\\\"ssh\\\",\\\"root@\\\"+json.load(sys.stdin)['tunnels'][0]['public_url'][6:].replace(':', ' -p '),\\\"\\\nROOT Password:craxid\\\")\" || echo \"\nError：NGROK_TOKEN，Ngrok Token\n\"" >> /openssh.sh \
-    && echo '/usr/sbin/sshd -D' >>/openssh.sh \
-    && echo 'PermitRootLogin yes' >>  /etc/ssh/sshd_config  \
-    && echo root:craxid|chpasswd \
-    && chmod 755 /openssh.sh
-EXPOSE 80 443 3306 4040 5432 5700 5701 5010 6800 6900 8080 8888 9000
-CMD /openssh.sh
+FROM ubuntu:latest
+RUN apt update -y > /dev/null 2>&1 && apt upgrade -y > /dev/null 2>&1 && apt install locales -y \
+&& localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
+ENV LANG en_US.utf8
+RUN apt install ssh wget unzip -y > /dev/null 2>&1
+RUN wget -O ngrok.zip https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-linux-amd64.zip > /dev/null 2>&1
+RUN unzip ngrok.zip
+RUN echo "./ngrok config add-authtoken $2M2ESLHPPRegkubJghBtpyGDmPa_32TreRQWPsZZngSwCwJAC &&" >>/1.sh
+RUN echo "./ngrok tcp 22 &>/dev/null &" >>/1.sh
+RUN mkdir /run/sshd
+RUN echo '/usr/sbin/sshd -D' >>/1.sh
+RUN echo 'PermitRootLogin yes' >>  /etc/ssh/sshd_config 
+RUN echo "PasswordAuthentication yes" >> /etc/ssh/sshd_config
+RUN echo root:$Laksh2031|chpasswd
+RUN service ssh start
+RUN chmod 755 /1.sh
+EXPOSE 80 8888 8080 443 5130 5131 5132 5133 5134 5135 3306
+CMD  /1.sh
